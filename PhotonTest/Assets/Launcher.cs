@@ -19,6 +19,7 @@ namespace Com.MyCompany.MyGame
         #region Private Fields
 
         string gameVersion = "1";
+        bool isConnecting;
 
         [Tooltip("The Ui Panel to let the user enter name, connect and play")]
         [SerializeField]
@@ -60,7 +61,7 @@ namespace Com.MyCompany.MyGame
             }
             else
             {
-                PhotonNetwork.ConnectUsingSettings();
+                isConnecting = PhotonNetwork.ConnectUsingSettings();
                 PhotonNetwork.GameVersion = gameVersion;
             }
         }
@@ -72,12 +73,19 @@ namespace Com.MyCompany.MyGame
         public override void OnConnectedToMaster()
         {
             Debug.Log("PUN Basics Tutorial / Launcher: OnConnectedToMaster() was called by PUN");
-            PhotonNetwork.JoinRandomRoom();
+
+            if (isConnecting)
+            {
+                PhotonNetwork.JoinRandomRoom();
+                isConnecting = false;
+            }
+            
 
         }
 
         public override void OnDisconnected(DisconnectCause cause)
         {
+            isConnecting = false;
             progressLabel.SetActive(false);
             controlPanel.SetActive(true);
             Debug.LogWarningFormat("PUN Basics Tutorial / Launcher: OnDisconnected() was caused by PUN with reason {0}", cause);
@@ -92,6 +100,13 @@ namespace Com.MyCompany.MyGame
         public override void OnJoinedRoom()
         {
             Debug.Log("PUN Basics Tutorial/Launcher: OnJoinedRoom() called by PUN. Now this client is in a room.");
+
+            if(PhotonNetwork.CurrentRoom.PlayerCount == 1)
+            {
+                Debug.Log("We load the 'Room for 1' ");
+
+                PhotonNetwork.LoadLevel("Room for 1");
+            }
         }
 
         #endregion
