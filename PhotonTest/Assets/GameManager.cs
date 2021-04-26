@@ -62,6 +62,8 @@ namespace Com.MyCompany.MyGame
                 Debug.LogError("PhotonNetwork : Trying to Load a level but we are not the master Client");
             }
             Debug.LogFormat("PhotonNetwork : Loading Level : {0}", PhotonNetwork.CurrentRoom.PlayerCount);
+            PhotonNetwork.DestroyAll();
+            Debug.Log("Destroyed all Objects!");
             PhotonNetwork.LoadLevel("Room for " + PhotonNetwork.CurrentRoom.PlayerCount);
         }
         #endregion
@@ -70,6 +72,7 @@ namespace Com.MyCompany.MyGame
         private void Start()
         {
             PhotonNetwork.Instantiate("User", new Vector3(0, 0, 0), Quaternion.identity);
+            Debug.Log("New Player created!");
         }
         #endregion
     }
