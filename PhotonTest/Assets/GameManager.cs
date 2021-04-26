@@ -65,6 +65,13 @@ namespace Com.MyCompany.MyGame
             PhotonNetwork.LoadLevel("Room for " + PhotonNetwork.CurrentRoom.PlayerCount);
         }
         #endregion
+
+        #region MonoBehavior Callbacks
+        private void Start()
+        {
+            PhotonNetwork.Instantiate("User", new Vector3(0, 0, 0), Quaternion.identity);
+        }
+        #endregion
     }
 }
 
