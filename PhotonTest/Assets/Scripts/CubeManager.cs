@@ -46,9 +46,9 @@ namespace Com.MyCompany.MyGame
         // Start is called before the first frame update
         void Start()
         {
-            CameraWork cameraWork = this.gameObject.GetComponent<CameraWork>();
+            //CameraWork cameraWork = this.gameObject.GetComponent<CameraWork>();
 
-            if (cameraWork != null)
+            /*if (cameraWork != null)
             {
                 if (photonView.IsMine)
                 {
@@ -58,7 +58,7 @@ namespace Com.MyCompany.MyGame
             else
             {
                 Debug.LogError("<Color=Red><a>Missing</a></Color> CameraWork Component on playerPrefab.", this);
-            }
+            }*/
 
             if (photonView.IsMine)
             {
