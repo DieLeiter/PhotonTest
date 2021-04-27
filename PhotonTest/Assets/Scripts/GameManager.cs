@@ -13,12 +13,24 @@ namespace Com.MyCompany.MyGame
     {
         #region Public Fields
         public static GameManager Instance;
+        public GameObject playerPrefab;
         #endregion
 
         #region MonoBehaviour Callbacks
         private void Start()
         {
             Instance = this;
+
+            if(playerPrefab == null)
+            {
+                Debug.LogError("<Color=Red><a>Missing</a></Color> playerPrefab Reference. Please set it up in GameObject 'Game Manager'", this);
+            }
+            else
+            {
+                Debug.LogFormat("We are Instantiating LocalPlayer from {0}", Application.loadedLevelName);
+
+                PhotonNetwork.Instantiate(this.playerPrefab.name, new Vector3(0f, 5f, 0f), Quaternion.identity, 0);
+            }
         }
         #endregion
         #region Photon Callbacks
@@ -72,6 +84,7 @@ namespace Com.MyCompany.MyGame
                 Debug.LogError("PhotonNetwork : Trying to Load a level but we are not the master Client");
             }
             Debug.LogFormat("PhotonNetwork : Loading Level : {0}", PhotonNetwork.CurrentRoom.PlayerCount);
+            PhotonNetwork.DestroyAll();
             PhotonNetwork.LoadLevel("Room for " + PhotonNetwork.CurrentRoom.PlayerCount);
         }
         #endregion
