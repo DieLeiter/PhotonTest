@@ -13,7 +13,8 @@ namespace Com.MyCompany.MyGame
     public class CubeManager : MonoBehaviourPunCallbacks, IPunObservable
     {
         #region Public fields
-
+        [Tooltip("The local player instance. Use this to know if the local player is represented in the Scene")]
+        public static GameObject localPlayerInstance;
         #endregion
 
         #region Private fields
@@ -29,6 +30,19 @@ namespace Com.MyCompany.MyGame
         #endregion
 
         #region MonoBehaviour callbacks
+        void Awake()
+        {
+            // #Important
+            // used in GameManager.cs: we keep track of the localPlayer instance to prevent instantiation when levels are synchronized
+            if (photonView.IsMine)
+            {
+                CubeManager.localPlayerInstance = this.gameObject;
+            }
+            // #Critical
+            // we flag as don't destroy on load so that instance survives level synchronization, thus giving a seamless experience when levels load.
+            DontDestroyOnLoad(this.gameObject);
+        }
+
         // Start is called before the first frame update
         void Start()
         {
