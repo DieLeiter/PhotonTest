@@ -6,6 +6,7 @@ using UnityEngine.EventSystems;
 using Photon.Pun;
 using Photon.Pun.Demo.PunBasics;
 using System.Runtime.CompilerServices;
+using ExitGames.Client.Photon.StructWrapping;
 
 namespace Com.MyCompany.MyGame
 {
@@ -43,6 +44,11 @@ namespace Com.MyCompany.MyGame
             else
             {
                 Debug.LogError("<Color=Red><a>Missing</a></Color> CameraWork Component on playerPrefab.", this);
+            }
+
+            if (photonView.IsMine)
+            {
+                photonView.RPC("SetColor", RpcTarget.AllBuffered);
             }
         }
 
@@ -103,6 +109,17 @@ namespace Com.MyCompany.MyGame
             }
         }
 
+        [PunRPC]
+        void SetColor()
+        {
+            Material cubeMaterial = cube.GetComponent<Renderer>().material;
+            Material sphereMaterial = sphere.GetComponent<Renderer>().material;
+
+            Color color = new Color(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f), 1);
+
+            cubeMaterial.SetColor("_Color", color);
+            sphereMaterial.SetColor("_Color", color);
+        }
         #endregion
 
         #region IPunObservable implementation
