@@ -11,6 +11,16 @@ namespace Com.MyCompany.MyGame
 {
     public class GameManager : MonoBehaviourPunCallbacks
     {
+        #region Public Fields
+        public static GameManager Instance;
+        #endregion
+
+        #region MonoBehaviour Callbacks
+        private void Start()
+        {
+            Instance = this;
+        }
+        #endregion
         #region Photon Callbacks
 
         public override void OnLeftRoom()
@@ -62,17 +72,7 @@ namespace Com.MyCompany.MyGame
                 Debug.LogError("PhotonNetwork : Trying to Load a level but we are not the master Client");
             }
             Debug.LogFormat("PhotonNetwork : Loading Level : {0}", PhotonNetwork.CurrentRoom.PlayerCount);
-            PhotonNetwork.DestroyAll();
-            Debug.Log("Destroyed all Objects!");
             PhotonNetwork.LoadLevel("Room for " + PhotonNetwork.CurrentRoom.PlayerCount);
-        }
-        #endregion
-
-        #region MonoBehavior Callbacks
-        private void Start()
-        {
-            PhotonNetwork.Instantiate("User", new Vector3(0, 0, 0), Quaternion.identity);
-            Debug.Log("New Player created!");
         }
         #endregion
     }
