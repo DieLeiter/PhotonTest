@@ -48,7 +48,8 @@ namespace Com.MyCompany.MyGame
 
             if (photonView.IsMine)
             {
-                photonView.RPC("SetColor", RpcTarget.AllBuffered);
+                Color color = new Color(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f), 1);
+                photonView.RPC("SetColor", RpcTarget.AllBuffered, color);
             }
         }
 
@@ -110,12 +111,10 @@ namespace Com.MyCompany.MyGame
         }
 
         [PunRPC]
-        void SetColor()
+        void SetColor(Color color)
         {
             Material cubeMaterial = cube.GetComponent<Renderer>().material;
             Material sphereMaterial = sphere.GetComponent<Renderer>().material;
-
-            Color color = new Color(Random.Range(0f, 1f), Random.Range(0f, 1f), Random.Range(0f, 1f), 1);
 
             cubeMaterial.SetColor("_Color", color);
             sphereMaterial.SetColor("_Color", color);
