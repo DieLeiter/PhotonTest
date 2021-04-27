@@ -4,10 +4,11 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 using Photon.Pun;
+using Photon.Pun.Demo.PunBasics;
 
 namespace Com.MyCompany.MyGame
 {
-    public class PlayerManager : MonoBehaviourPunCallbacks
+    public class PlayerManager : MonoBehaviourPunCallbacks, IPunObservable
     {
 
         #region Public Fields
@@ -37,6 +38,23 @@ namespace Com.MyCompany.MyGame
             }
         }
 
+        private void Start()
+        {
+            CameraWork cameraWork = this.gameObject.GetComponent<CameraWork>();
+
+            if(cameraWork != null)
+            {
+                if (photonView.IsMine)
+                {
+                    cameraWork.OnStartFollowing();
+                }
+            }
+            else
+            {
+                Debug.LogError("<Color=Red><a>Missing</a></Color> CameraWork Component on playerPrefab.", this);
+            }
+        }
+
         // Update is called once per frame
         void Update()
         {
@@ -47,12 +65,12 @@ namespace Com.MyCompany.MyGame
                 {
                     GameManager.Instance.LeaveRoom();
                 }
+            }
 
-                // trigger Beams active state
-                if (beams != null && isFiring != beams.activeInHierarchy)
-                {
-                    beams.SetActive(isFiring);
-                }
+            // trigger Beams active state
+            if (beams != null && isFiring != beams.activeInHierarchy)
+            {
+                beams.SetActive(isFiring);
             }
         }
 
@@ -119,6 +137,27 @@ namespace Com.MyCompany.MyGame
                 {
                     isFiring = false;
                 }
+            }
+        }
+        #endregion
+
+        #region IPunObservable implementation
+        public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
+        {
+            if (stream.IsWriting)
+            {
+                // We own this player: send the others our data
+                stream.SendNext(isFiring);
+                stream.SendNext(health);
+
+
+            }
+            else
+            {
+                // Network player, receive data
+                this.isFiring = (bool)stream.ReceiveNext();
+                this.health = (float)stream.ReceiveNext();
+
             }
         }
         #endregion
